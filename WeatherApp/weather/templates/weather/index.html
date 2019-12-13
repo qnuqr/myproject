@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   crossorigin=""/>
+   <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+   crossorigin=""></script>
+    <title>Погодное приложение</title>
+    <link rel="stylesheet" href="static/style.css">
+  </head>
+  <body class="bg-special">
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+  <h5 class="my-0 mr-md-auto font-weight-normal">WeatherMan</h5>
+  <nav class="my-2 my-md-0 mr-md-3">
+    <a class="p-2 text-dark" href="#">Главная</a>
+    <a class="p-2 text-dark" href="#">Информация</a>
+  </nav>
+  <a class="btn btn-outline-primary" href="#">Документация</a>
+</div>
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-6 offset-1">
+      <h1 class="text-white">Погода в вашем городе</h1>
+      <form action="" method="post">
+        {% csrf_token %}
+        <label for="city" class="text-white" >Город</label>
+        {{ form.name }}
+        <input type="submit" name="send" value="Узнать"  class="mt-2 btn btn-info">
+      </form>
+    </div>
+    <div class="col-4 offset-1">
+      <h1 class="text-white">Информация</h1>
+      {% for info in all_info %}
+      <div class="alert alert-info">
+        <b>Город</b> {{ info.city }} <br>
+        <b>Температура</b> {{ info.temp }}<sup>o</sup><br>
+        <img src="http://openweathermap.org/img/w/{{ info.icon }}.png" alt="Фото погоды" class="img-thumbnail">
+      </div>
+  </div>
+  <div class="container mt-5">
+    <div class="row">
+  <h1 class="text-white">Карта</h1>
+  <div id="map" style="width: 600px; height: 400px;"></div>
+
+  <script>
+  var cities = L.layerGroup();
+
+  	L.marker([49.82, 72.88]).bindPopup('Қарағанды, .').addTo(cities),
+  	L.marker([50.06, 72.87]).bindPopup('Теміртау, .').addTo(cities),
+  	L.marker([51.14, 71.33]).bindPopup('Нұр-султан, .').addTo(cities),
+  	L.marker([43.21, 76.66]).bindPopup('Алматы.').addTo(cities);
+    L.marker([50.27, 57.05]).bindPopup('ТУҒАН ЖЕР.').addTo(cities);
+
+
+  	var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+  			'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+  			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+  		mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+
+  	var grayscale   = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', attribution: mbAttr}),
+  		streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11',   attribution: mbAttr});
+
+  	var map = L.map('map', {
+  		center: [50.56, 71.44 ,],
+  		zoom: 5,
+  		layers: [grayscale, cities]
+  	});
+
+  	var baseLayers = {
+  		"Grayscale": grayscale,
+  		"Streets": streets
+  	};
+
+  	var overlays = {
+  		"Cities": cities
+  	};
+
+  	L.control.layers(baseLayers, overlays).addTo(map);
+
+  </script>
+
+ </div>
+</div>
+  <!-- <script>
+  // Initialize and add the map
+  function initMap() {
+    // The location of Uluru
+    var uluru = {lat: 51.147862, lng: 71.3393068};
+    // The map, centered at Uluru
+    var map = new google.maps.Map(
+        document.getElementById('map'), {zoom: 4, center: uluru});
+    // The marker, positioned at Uluru
+    var marker = new google.maps.Marker({position: uluru, map: map});
+  }
+      </script>
+      <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDo-ZnJwrxnyZu9MKWqzYkZ3T-yEikjwmg&callback=initMap">
+      </script> -->
+</div>
+ {% endfor %}
+
+</div>
+  </body>
+</html>
+  </body>
+</html>
